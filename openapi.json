@@ -1,0 +1,2295 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Prompt Management API",
+    "description": "API for managing prompts and their versions",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/v1/projects/": {
+      "post": {
+        "tags": [
+          "projects"
+        ],
+        "summary": "Create Project",
+        "description": "Create a new project",
+        "operationId": "create_project_api_v1_projects__post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "projects"
+        ],
+        "summary": "List Projects",
+        "description": "List projects with optional filtering",
+        "operationId": "list_projects_api_v1_projects__get",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 100,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ProjectStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "name": "tag",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Tag"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Project"
+                  },
+                  "title": "Response List Projects Api V1 Projects  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{project_id}": {
+      "get": {
+        "tags": [
+          "projects"
+        ],
+        "summary": "Get Project",
+        "description": "Get a specific project by ID",
+        "operationId": "get_project_api_v1_projects__project_id__get",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "title": "The ID of the project to get"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "projects"
+        ],
+        "summary": "Update Project",
+        "description": "Update a project",
+        "operationId": "update_project_api_v1_projects__project_id__put",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "title": "The ID of the project to update"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "projects"
+        ],
+        "summary": "Delete Project",
+        "description": "Delete a project",
+        "operationId": "delete_project_api_v1_projects__project_id__delete",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "title": "The ID of the project to delete"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{project_id}/increment-prompt": {
+      "post": {
+        "tags": [
+          "projects"
+        ],
+        "summary": "Increment Prompt Count",
+        "description": "Increment the prompt count for a project",
+        "operationId": "increment_prompt_count_api_v1_projects__project_id__increment_prompt_post",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "title": "The ID of the project to increment prompt count"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/prompts/": {
+      "post": {
+        "tags": [
+          "prompts"
+        ],
+        "summary": "Create Or Version Prompt",
+        "description": "Create a new prompt or create a new version of existing prompt.\n\nIf prompt.id is provided, creates a new version of that prompt.\nIf no id is provided but a prompt with same name exists in project, creates a new version.\nOtherwise creates a new prompt.",
+        "operationId": "create_or_version_prompt_api_v1_prompts__post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/PromptCreate"
+                  },
+                  {
+                    "$ref": "#/components/schemas/PromptUpdate"
+                  }
+                ],
+                "title": "Prompt"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Prompt"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/prompts/{prompt_id}": {
+      "get": {
+        "tags": [
+          "prompts"
+        ],
+        "summary": "Get Prompt",
+        "description": "Get a specific prompt by ID",
+        "operationId": "get_prompt_api_v1_prompts__prompt_id__get",
+        "parameters": [
+          {
+            "name": "prompt_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "title": "The ID of the prompt to get"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Prompt"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "prompts"
+        ],
+        "summary": "Update Prompt",
+        "description": "Update a prompt",
+        "operationId": "update_prompt_api_v1_prompts__prompt_id__put",
+        "parameters": [
+          {
+            "name": "prompt_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "title": "The ID of the prompt to update"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PromptUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Prompt"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "prompts"
+        ],
+        "summary": "Delete Prompt",
+        "description": "Delete a prompt",
+        "operationId": "delete_prompt_api_v1_prompts__prompt_id__delete",
+        "parameters": [
+          {
+            "name": "prompt_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "title": "The ID of the prompt to delete"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/prompts/project/{project_id}": {
+      "get": {
+        "tags": [
+          "prompts"
+        ],
+        "summary": "List Project Prompts",
+        "description": "List all prompts for a project with optional status filter",
+        "operationId": "list_project_prompts_api_v1_prompts_project__project_id__get",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "title": "The ID of the project to get prompts for"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/PromptStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Prompt"
+                  },
+                  "title": "Response List Project Prompts Api V1 Prompts Project  Project Id  Get",
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/prompts/{prompt_id}/versions": {
+      "get": {
+        "tags": [
+          "prompts"
+        ],
+        "summary": "List Prompt Versions",
+        "description": "List all versions of a prompt",
+        "operationId": "list_prompt_versions_api_v1_prompts__prompt_id__versions_get",
+        "parameters": [
+          {
+            "name": "prompt_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "title": "The ID of the prompt to get versions for"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PromptVersion"
+                  },
+                  "title": "Response List Prompt Versions Api V1 Prompts  Prompt Id  Versions Get",
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/prompts/{prompt_id}/version/{version}": {
+      "get": {
+        "tags": [
+          "prompts"
+        ],
+        "summary": "Get Prompt Version",
+        "description": "Get a specific version of a prompt",
+        "operationId": "get_prompt_version_api_v1_prompts__prompt_id__version__version__get",
+        "parameters": [
+          {
+            "name": "prompt_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "title": "The ID of the prompt"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "title": "The version number to get"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PromptVersion"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/prompts/{prompt_id}/publish": {
+      "post": {
+        "tags": [
+          "prompts"
+        ],
+        "summary": "Publish Prompt",
+        "description": "Publish a prompt",
+        "operationId": "publish_prompt_api_v1_prompts__prompt_id__publish_post",
+        "parameters": [
+          {
+            "name": "prompt_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "title": "The ID of the prompt to publish"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Prompt"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/settings/": {
+      "get": {
+        "tags": [
+          "settings",
+          "settings"
+        ],
+        "summary": "List Settings",
+        "description": "List all settings",
+        "operationId": "list_settings_api_v1_settings__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SettingResponse"
+                  },
+                  "type": "array",
+                  "title": "Response List Settings Api V1 Settings  Get"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "settings",
+          "settings"
+        ],
+        "summary": "Create Setting",
+        "description": "Create a new setting",
+        "operationId": "create_setting_api_v1_settings__post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SettingCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SettingResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/settings/{setting_id}": {
+      "get": {
+        "tags": [
+          "settings",
+          "settings"
+        ],
+        "summary": "Get Setting",
+        "description": "Get a specific setting by ID",
+        "operationId": "get_setting_api_v1_settings__setting_id__get",
+        "parameters": [
+          {
+            "name": "setting_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "title": "The ID of the setting to get"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SettingResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "settings",
+          "settings"
+        ],
+        "summary": "Update Setting",
+        "description": "Update a setting",
+        "operationId": "update_setting_api_v1_settings__setting_id__patch",
+        "parameters": [
+          {
+            "name": "setting_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "title": "The ID of the setting to update"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SettingUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SettingResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "settings",
+          "settings"
+        ],
+        "summary": "Delete Setting",
+        "description": "Delete a setting",
+        "operationId": "delete_setting_api_v1_settings__setting_id__delete",
+        "parameters": [
+          {
+            "name": "setting_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "title": "The ID of the setting to delete"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/runs": {
+      "post": {
+        "tags": [
+          "runs",
+          "runs"
+        ],
+        "summary": "Create Run",
+        "description": "Create a new run for a prompt.\n\nThis endpoint executes a prompt with the given input variables and returns the result.\nThe run is stored in the database for future reference.\n\nArgs:\n    run_in: The run creation parameters\n    db: Database session\n\nReturns:\n    Run: The created run object\n\nRaises:\n    404: If the prompt is not found\n    400: If the input variables are invalid\n    500: If there's an internal server error",
+        "operationId": "create_run_api_v1_runs_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RunCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Run"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/runs/{prompt_id}/list": {
+      "get": {
+        "tags": [
+          "runs",
+          "runs"
+        ],
+        "summary": "List Runs",
+        "description": "List all runs for a specific prompt with pagination support.\n\nThis endpoint returns a paginated list of runs for a given prompt ID.\nThe results can be ordered by creation time (latest first or oldest first).\n\nArgs:\n    prompt_id: ID of the prompt to list runs for\n    skip: Number of records to skip (for pagination)\n    limit: Maximum number of records to return\n    order_by_latest: If True, returns latest runs first\n    db: Database session\n\nReturns:\n    List[Run]: List of run objects\n\nRaises:\n    404: If the prompt is not found\n    500: If there's an internal server error\n\nExamples:\n    Get latest 10 runs:\n    ```\n    GET /runs/1/list?skip=0&limit=10&order_by_latest=true\n    ```\n\n    Get next page of runs:\n    ```\n    GET /runs/1/list?skip=10&limit=10&order_by_latest=true\n    ```\n\n    Get oldest runs first:\n    ```\n    GET /runs/1/list?skip=0&limit=10&order_by_latest=false\n    ```",
+        "operationId": "list_runs_api_v1_runs__prompt_id__list_get",
+        "parameters": [
+          {
+            "name": "prompt_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "description": "ID of the prompt to list runs for",
+              "title": "Prompt Id"
+            },
+            "description": "ID of the prompt to list runs for",
+            "example": 1
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of records to skip for pagination",
+              "default": 0,
+              "title": "Skip"
+            },
+            "description": "Number of records to skip for pagination",
+            "example": 0
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 1000,
+              "minimum": 1,
+              "description": "Maximum number of records to return",
+              "default": 100,
+              "title": "Limit"
+            },
+            "description": "Maximum number of records to return",
+            "example": 100
+          },
+          {
+            "name": "order_by_latest",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "description": "If True, returns latest runs first",
+              "default": true,
+              "title": "Order By Latest"
+            },
+            "description": "If True, returns latest runs first",
+            "example": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Run"
+                  },
+                  "title": "Response List Runs Api V1 Runs  Prompt Id  List Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health Check",
+        "description": "Health check endpoint",
+        "operationId": "health_check_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/test-error": {
+      "get": {
+        "summary": "Test Error",
+        "description": "Test error handling",
+        "operationId": "test_error_test_error_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Project": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 50,
+            "minLength": 3,
+            "title": "Name",
+            "description": "Name of the project"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "description": "Detailed description of the project"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ProjectStatus",
+            "description": "Current status of the project",
+            "default": "draft"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 5,
+            "title": "Tags",
+            "description": "List of project tags for organization"
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^\\d+\\.\\d+\\.\\d+$",
+            "title": "Version",
+            "description": "Project version in semantic versioning format",
+            "default": "1.0.0"
+          },
+          "is_public": {
+            "type": "boolean",
+            "title": "Is Public",
+            "description": "Whether project is publicly accessible",
+            "default": false
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id",
+            "description": "Unique project identifier"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At",
+            "description": "Timestamp of project creation"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At",
+            "description": "Timestamp of last update"
+          },
+          "prompt_count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Prompt Count",
+            "description": "Number of prompts in the project",
+            "default": 0
+          },
+          "prompts": {
+            "items": {
+              "$ref": "#/components/schemas/PromptBase"
+            },
+            "type": "array",
+            "title": "Prompts",
+            "description": "List of prompts associated with the project"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "id",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "Project",
+        "description": "Complete project schema including database fields\n\nAdditional Attributes:\n    id: Unique project identifier\n    created_at: Timestamp of project creation\n    updated_at: Timestamp of last update\n    prompt_count: Number of prompts in the project\n    prompts: List of prompts associated with the project",
+        "examples": [
+          {
+            "created_at": "2024-01-01T00:00:00",
+            "description": "A sample project",
+            "id": 1,
+            "is_public": false,
+            "name": "my-project",
+            "prompt_count": 5,
+            "prompts": [],
+            "status": "active",
+            "tags": [
+              "production",
+              "gpt4"
+            ],
+            "updated_at": "2024-01-01T00:00:00",
+            "version": "1.0.0"
+          }
+        ]
+      },
+      "ProjectCreate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 50,
+            "minLength": 3,
+            "title": "Name",
+            "description": "Name of the project"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "description": "Detailed description of the project"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ProjectStatus",
+            "description": "Current status of the project",
+            "default": "draft"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 5,
+            "title": "Tags",
+            "description": "List of project tags for organization"
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^\\d+\\.\\d+\\.\\d+$",
+            "title": "Version",
+            "description": "Project version in semantic versioning format",
+            "default": "1.0.0"
+          },
+          "is_public": {
+            "type": "boolean",
+            "title": "Is Public",
+            "description": "Whether project is publicly accessible",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "ProjectCreate",
+        "description": "Schema for creating a new project"
+      },
+      "ProjectStatus": {
+        "type": "string",
+        "enum": [
+          "active",
+          "archived",
+          "draft"
+        ],
+        "title": "ProjectStatus",
+        "description": "Enum for project status\nACTIVE: Project is currently in use\nARCHIVED: Project is archived but kept for reference\nDRAFT: Project is still in development",
+
+      },
+      "ProjectUpdate": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50,
+                "minLength": 3
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ProjectStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "tags": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "maxItems": 5
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tags"
+          },
+          "version": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^\\d+\\.\\d+\\.\\d+$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Version"
+          },
+          "is_public": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Public"
+          }
+        },
+        "type": "object",
+        "title": "ProjectUpdate",
+        "description": "Schema for updating an existing project\nAll fields are optional",
+
+      },
+      "Prompt": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 3,
+            "pattern": "^[a-zA-Z][a-zA-Z0-9_\\-\\.]*$",
+            "title": "Name",
+            "description": "Name of the prompt"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "description": "Description of what the prompt does"
+          },
+          "content": {
+            "type": "string",
+            "maxLength": 10000,
+            "minLength": 10,
+            "title": "Content",
+            "description": "The actual prompt template"
+          },
+          "project_id": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Project Id",
+            "description": "ID of the project this prompt belongs to"
+          },
+          "variables": {
+            "items": {
+              "$ref": "#/components/schemas/PromptVariable"
+            },
+            "type": "array",
+            "title": "Variables",
+            "description": "List of variables used in the prompt"
+          },
+          "max_tokens": {
+            "type": "integer",
+            "maximum": 4000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Max Tokens",
+            "description": "Maximum tokens in response"
+          },
+          "temperature": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Temperature",
+            "description": "Sampling temperature",
+            "default": 0.7
+          },
+          "status": {
+            "$ref": "#/components/schemas/PromptStatus",
+            "default": "draft"
+          },
+          "output_schema": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Output Schema",
+            "description": "JSON schema for validating structured output"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "version_count": {
+            "type": "integer",
+            "title": "Version Count",
+            "default": 1
+          },
+          "current_version": {
+            "type": "integer",
+            "title": "Current Version",
+            "default": 1
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "content",
+          "project_id",
+          "max_tokens",
+          "id"
+        ],
+        "title": "Prompt",
+        "description": "Schema for prompt responses"
+      },
+      "PromptBase": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 3,
+            "pattern": "^[a-zA-Z][a-zA-Z0-9_\\-\\.]*$",
+            "title": "Name",
+            "description": "Name of the prompt"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "description": "Description of what the prompt does"
+          },
+          "content": {
+            "type": "string",
+            "maxLength": 10000,
+            "minLength": 10,
+            "title": "Content",
+            "description": "The actual prompt template"
+          },
+          "project_id": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Project Id",
+            "description": "ID of the project this prompt belongs to"
+          },
+          "variables": {
+            "items": {
+              "$ref": "#/components/schemas/PromptVariable"
+            },
+            "type": "array",
+            "title": "Variables",
+            "description": "List of variables used in the prompt"
+          },
+          "max_tokens": {
+            "type": "integer",
+            "maximum": 4000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Max Tokens",
+            "description": "Maximum tokens in response"
+          },
+          "temperature": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Temperature",
+            "description": "Sampling temperature",
+            "default": 0.7
+          },
+          "status": {
+            "$ref": "#/components/schemas/PromptStatus",
+            "description": "Current status of the prompt",
+            "default": "draft"
+          },
+          "output_schema": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Output Schema",
+            "description": "JSON schema for validating structured output"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "content",
+          "project_id",
+          "max_tokens"
+        ],
+        "title": "PromptBase",
+        "description": "Base Prompt Schema with common attributes and validations\n\nAttributes:\n    name: Unique name within project\n    description: Detailed description of prompt's purpose\n    content: Actual prompt template with variables\n    project_id: Associated project\n    variables: List of variables used in prompt\n    max_tokens: Maximum response length\n    temperature: Response randomness (0-1)\n    status: Current lifecycle status\n    output_schema: JSON schema for validating structured output",
+
+      },
+      "PromptCreate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 3,
+            "pattern": "^[a-zA-Z][a-zA-Z0-9_\\-\\.]*$",
+            "title": "Name",
+            "description": "Name of the prompt"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "description": "Description of what the prompt does"
+          },
+          "content": {
+            "type": "string",
+            "maxLength": 10000,
+            "minLength": 10,
+            "title": "Content",
+            "description": "The actual prompt template"
+          },
+          "project_id": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Project Id",
+            "description": "ID of the project this prompt belongs to"
+          },
+          "variables": {
+            "items": {
+              "$ref": "#/components/schemas/PromptVariable"
+            },
+            "type": "array",
+            "title": "Variables",
+            "description": "List of variables used in the prompt"
+          },
+          "max_tokens": {
+            "type": "integer",
+            "maximum": 4000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Max Tokens",
+            "description": "Maximum tokens in response"
+          },
+          "temperature": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Temperature",
+            "description": "Sampling temperature",
+            "default": 0.7
+          },
+          "status": {
+            "$ref": "#/components/schemas/PromptStatus",
+            "description": "Current status of the prompt",
+            "default": "draft"
+          },
+          "output_schema": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Output Schema",
+            "description": "JSON schema for validating structured output"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "content",
+          "project_id",
+          "max_tokens"
+        ],
+        "title": "PromptCreate",
+        "description": "Schema for creating a new prompt"
+      },
+      "PromptStatus": {
+        "type": "string",
+        "enum": [
+          "draft",
+          "testing",
+          "published",
+          "deprecated",
+          "archived"
+        ],
+        "title": "PromptStatus",
+        "description": "Status of a prompt in its lifecycle\n\nAttributes:\n    DRAFT: Initial status, prompt is being developed\n    TESTING: Prompt is ready for testing/review\n    PUBLISHED: Prompt is approved and live\n    DEPRECATED: Prompt is marked for removal but still usable\n    ARCHIVED: Prompt is no longer in use",
+
+      },
+      "PromptUpdate": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "content": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content"
+          },
+          "project_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Project Id"
+          },
+          "variables": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/PromptVariable"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Variables"
+          },
+          "max_tokens": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Tokens"
+          },
+          "temperature": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Temperature"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PromptStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "output_schema": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Output Schema"
+          }
+        },
+        "type": "object",
+        "title": "PromptUpdate",
+        "description": "Schema for updating an existing prompt"
+      },
+      "PromptVariable": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 50,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z][a-zA-Z0-9_]*$",
+            "title": "Name",
+            "description": "Name of the variable"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "description": "Description of what the variable represents"
+          },
+          "required": {
+            "type": "boolean",
+            "title": "Required",
+            "description": "Whether this variable must be provided",
+            "default": true
+          },
+          "type": {
+            "$ref": "#/components/schemas/VariableType",
+            "description": "Type of variable (string or image)",
+            "default": "string"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "PromptVariable",
+        "description": "Schema for prompt variables\n\nAttributes:\n    name: Name of the variable\n    description: Description of what the variable represents\n    required: Whether this variable must be provided\n    type: Type of variable (string or image)",
+
+      },
+      "PromptVersion": {
+        "properties": {
+          "version": {
+            "type": "integer",
+            "title": "Version",
+            "description": "Version number"
+          },
+          "content": {
+            "type": "string",
+            "title": "Content",
+            "description": "Prompt template content"
+          },
+          "variables": {
+            "items": {
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Variables",
+            "description": "List of variables used in prompt"
+          },
+          "max_tokens": {
+            "type": "integer",
+            "title": "Max Tokens",
+            "description": "Maximum tokens in response"
+          },
+          "temperature": {
+            "type": "number",
+            "title": "Temperature",
+            "description": "Sampling temperature"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At",
+            "description": "When this version was created"
+          },
+          "prompt_id": {
+            "type": "integer",
+            "title": "Prompt Id",
+            "description": "ID of the prompt"
+          },
+          "prompt_name": {
+            "type": "string",
+            "title": "Prompt Name",
+            "description": "Name of the prompt"
+          },
+          "prompt_description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prompt Description",
+            "description": "Description of the prompt"
+          },
+          "project_id": {
+            "type": "integer",
+            "title": "Project Id",
+            "description": "ID of the project"
+          }
+        },
+        "type": "object",
+        "required": [
+          "version",
+          "content",
+          "variables",
+          "max_tokens",
+          "temperature",
+          "created_at",
+          "prompt_id",
+          "prompt_name",
+          "prompt_description",
+          "project_id"
+        ],
+        "title": "PromptVersion",
+        "description": "Schema for prompt version with prompt details\n\nIncludes all base version fields plus prompt details",
+
+      },
+      "Run": {
+        "properties": {
+          "prompt_id": {
+            "type": "integer",
+            "title": "Prompt Id",
+            "description": "ID of the prompt to run",
+            "example": 1
+          },
+          "project_id": {
+            "type": "integer",
+            "title": "Project Id",
+            "description": "ID of the project this run belongs to",
+            "example": 1
+          },
+          "input_variables": {
+            "type": "object",
+            "title": "Input Variables",
+            "description": "Variables to inject into the prompt template. \n        For image inputs, the image should be base64 encoded.\n        Example: {\"text\": \"What is ML?\"} or {\"image\": \"base64...\", \"question\": \"What's in this image?\"}",
+            "example": {
+              "text": "What is machine learning?"
+            }
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model",
+            "description": "Specific model to use for this run. If not provided, uses system default",
+            "example": "gpt-4"
+          },
+          "structured_output": {
+            "type": "boolean",
+            "title": "Structured Output",
+            "description": "Whether to request structured JSON output based on prompt's output_schema",
+            "default": false,
+            "example": false
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id",
+            "description": "Unique identifier for the run",
+            "example": 1
+          },
+          "version": {
+            "type": "integer",
+            "title": "Version",
+            "description": "Version of the prompt used for this run",
+            "example": 1
+          },
+          "output": {
+            "type": "string",
+            "title": "Output",
+            "description": "Output from the model. May be plain text or JSON string if structured_output=True",
+            "example": "Machine learning is a subset of artificial intelligence...",
+
+          },
+          "prompt_tokens": {
+            "type": "integer",
+            "title": "Prompt Tokens",
+            "description": "Number of tokens in the prompt",
+            "example": 50
+          },
+          "completion_tokens": {
+            "type": "integer",
+            "title": "Completion Tokens",
+            "description": "Number of tokens in the completion",
+            "example": 150
+          },
+          "total_tokens": {
+            "type": "integer",
+            "title": "Total Tokens",
+            "description": "Total number of tokens used",
+            "example": 200
+          },
+          "latency_ms": {
+            "type": "integer",
+            "title": "Latency Ms",
+            "description": "Time taken to generate the response in milliseconds",
+            "example": 1500
+          },
+          "run_metadata": {
+            "type": "object",
+            "title": "Run Metadata",
+            "description": "Additional metadata about the run.\n        Contains structured_output flag, has_images flag, and timestamp",
+            "example": {
+              "has_images": false,
+              "structured_output": false,
+              "timestamp": "2024-12-27T17:10:00Z"
+            }
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At",
+            "description": "When this run was created",
+            "example": "2024-12-27T17:10:00Z"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At",
+            "description": "When this run was last updated",
+            "example": "2024-12-27T17:10:00Z"
+          }
+        },
+        "type": "object",
+        "required": [
+          "prompt_id",
+          "project_id",
+          "input_variables",
+          "id",
+          "version",
+          "output",
+          "prompt_tokens",
+          "completion_tokens",
+          "total_tokens",
+          "latency_ms",
+          "run_metadata",
+          "created_at"
+        ],
+        "title": "Run",
+        "description": "Schema for a complete run including results",
+        "example": {
+          "completion_tokens": 150,
+          "created_at": "2024-12-27T17:10:00Z",
+          "id": 1,
+          "input_variables": {
+            "text": "What is machine learning?"
+          },
+          "latency_ms": 1500,
+          "model": "gpt-4",
+          "output": "Machine learning is a subset of artificial intelligence...",
+          "project_id": 1,
+          "prompt_id": 1,
+          "prompt_tokens": 50,
+          "run_metadata": {
+            "has_images": false,
+            "structured_output": false,
+            "timestamp": "2024-12-27T17:10:00Z"
+          },
+          "structured_output": false,
+          "total_tokens": 200,
+          "updated_at": "2024-12-27T17:10:00Z",
+          "version": 1
+        }
+      },
+      "RunCreate": {
+        "properties": {
+          "prompt_id": {
+            "type": "integer",
+            "title": "Prompt Id",
+            "description": "ID of the prompt to run",
+            "example": 1
+          },
+          "project_id": {
+            "type": "integer",
+            "title": "Project Id",
+            "description": "ID of the project this run belongs to",
+            "example": 1
+          },
+          "input_variables": {
+            "type": "object",
+            "title": "Input Variables",
+            "description": "Variables to inject into the prompt template. \n        For image inputs, the image should be base64 encoded.\n        Example: {\"text\": \"What is ML?\"} or {\"image\": \"base64...\", \"question\": \"What's in this image?\"}",
+            "example": {
+              "text": "What is machine learning?"
+            }
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model",
+            "description": "Specific model to use for this run. If not provided, uses system default",
+            "example": "gpt-4"
+          },
+          "structured_output": {
+            "type": "boolean",
+            "title": "Structured Output",
+            "description": "Whether to request structured JSON output based on prompt's output_schema",
+            "default": false,
+            "example": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "prompt_id",
+          "project_id",
+          "input_variables"
+        ],
+        "title": "RunCreate",
+        "description": "Schema for creating a new run"
+      },
+      "SettingCreate": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z][a-zA-Z0-9_\\-\\.]*$",
+            "title": "Key",
+            "description": "Unique key for the setting"
+          },
+          "type": {
+            "$ref": "#/components/schemas/SettingType",
+            "description": "Type of setting"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "description": "Optional description"
+          },
+          "value": {
+            "type": "string",
+            "title": "Value",
+            "description": "Setting value"
+          }
+        },
+        "type": "object",
+        "required": [
+          "key",
+          "type",
+          "value"
+        ],
+        "title": "SettingCreate",
+        "description": "Schema for creating a new setting"
+      },
+      "SettingResponse": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z][a-zA-Z0-9_\\-\\.]*$",
+            "title": "Key",
+            "description": "Unique key for the setting"
+          },
+          "type": {
+            "$ref": "#/components/schemas/SettingType",
+            "description": "Type of setting"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "description": "Optional description"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id",
+            "description": "Unique identifier"
+          },
+          "value": {
+            "type": "string",
+            "title": "Value",
+            "description": "Setting value (masked for API keys)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "key",
+          "type",
+          "id",
+          "value"
+        ],
+        "title": "SettingResponse",
+        "description": "Schema for setting responses\n\nFor API keys, returns a masked value\nFor other settings, returns the actual value",
+
+      },
+      "SettingType": {
+        "type": "string",
+        "enum": [
+          "api_key",
+          "config"
+        ],
+        "title": "SettingType",
+        "description": "Types of settings that can be stored"
+      },
+      "SettingUpdate": {
+        "properties": {
+          "value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value",
+            "description": "New setting value"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "description": "New description"
+          }
+        },
+        "type": "object",
+        "title": "SettingUpdate",
+        "description": "Schema for updating a setting\n\nAll fields are optional since we may want to update\njust the value or just the description",
+
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "VariableType": {
+        "type": "string",
+        "enum": [
+          "string",
+          "image"
+        ],
+        "title": "VariableType",
+        "description": "Type of prompt variable"
+      }
+    }
+  }
+}
