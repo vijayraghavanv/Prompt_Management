@@ -10,8 +10,8 @@ RUN apt-get update && \
 # Clone frontend repository
 RUN git clone https://github.com/vijayraghavanv/YAPMT.git .
 
-# Install dependencies
-RUN npm install
+# Install dependencies with force flag
+RUN npm install --force
 
 # Build the application
 RUN npm run build
