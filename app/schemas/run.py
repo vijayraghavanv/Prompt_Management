@@ -41,6 +41,11 @@ class RunBase(BaseModel):
         description="Whether to request structured JSON output based on prompt's output_schema",
         example=False
     )
+    version: Optional[int] = Field(
+        None,
+        description="Specific version of the prompt to run. If not provided, uses current version",
+        example=1
+    )
 
 
 class RunCreate(RunBase):
@@ -80,7 +85,6 @@ class Run(RunBase):
     )
 
     id: int = Field(..., description="Unique identifier for the run", example=1)
-    version: int = Field(..., description="Version of the prompt used for this run", example=1)
     output: str = Field(
         ..., 
         description="Output from the model. May be plain text or JSON string if structured_output=True",

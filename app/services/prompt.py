@@ -1,5 +1,5 @@
 from typing import Optional, TypeVar, Sequence, List, Dict
-from sqlalchemy import select, exc as sql_exc, union_all
+from sqlalchemy import select, exc as sql_exc, union_all, JSON, desc, func
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from loguru import logger
@@ -309,6 +309,7 @@ class PromptService:
                 description=prompt.description,  # Include description
                 content=prompt.content,
                 variables=prompt.variables,
+                output_schema=prompt.output_schema,
                 max_tokens=prompt.max_tokens,
                 temperature=prompt.temperature
             )
@@ -431,19 +432,6 @@ class PromptService:
             )
 
     def get_versions(self, prompt_id: int) -> Sequence[PromptVersion]:
-        """
-        Retrieve all versions of a prompt ordered by version number descending.
-        Includes both historical versions from prompt_versions and current version from prompts.
-
-        Args:
-            prompt_id (int): ID of the prompt
-
-        Returns:
-            Sequence[PromptVersion]: List of prompt versions
-
-        Raises:
-            AppException: If database operation fails
-        """
         try:
             # Get the prompt first to get its details
             prompt = self.get(prompt_id)
@@ -456,31 +444,35 @@ class PromptService:
                 PromptVersion.version,
                 PromptVersion.description,
                 PromptVersion.content,
-                PromptVersion.variables,
+                PromptVersion.variables.cast(JSON),
+                PromptVersion.output_schema.cast(JSON),
                 PromptVersion.max_tokens,
                 PromptVersion.temperature,
                 PromptVersion.created_at
             ).where(PromptVersion.prompt_id == prompt_id)
 
+            # For the current version, use updated_at as created_at
             current_version_query = select(
                 Prompt.id.label('prompt_id'),
                 Prompt.current_version.label('version'),
                 Prompt.description,
                 Prompt.content,
-                Prompt.variables,
+                Prompt.variables.cast(JSON),
+                Prompt.output_schema.cast(JSON),
                 Prompt.max_tokens,
                 Prompt.temperature,
-                Prompt.updated_at.label('created_at')
+                func.coalesce(Prompt.updated_at, Prompt.created_at).label('created_at')
+                # Use coalesce to handle null updated_at
             ).where(Prompt.id == prompt_id)
 
             # Combine queries with UNION ALL and order by version descending
             final_query = versions_query.union_all(current_version_query).order_by(
-                PromptVersion.version.desc()
+                desc("version")
             )
 
             result = self.db.execute(final_query).all()
             logger.debug(f"Retrieved {len(result)} versions for prompt {prompt_id}")
-            
+
             # Convert result to PromptVersion objects
             versions = []
             for row in result:
@@ -490,6 +482,7 @@ class PromptService:
                     description=row.description,
                     content=row.content,
                     variables=row.variables,
+                    output_schema=row.output_schema,
                     max_tokens=row.max_tokens,
                     temperature=row.temperature,
                     created_at=row.created_at
@@ -497,7 +490,7 @@ class PromptService:
                 # Set the prompt relationship for property access
                 version.prompt = prompt
                 versions.append(version)
-            
+
             return versions
 
         except SQLAlchemyError as e:
@@ -507,7 +500,6 @@ class PromptService:
                 detail="Failed to retrieve prompt versions",
                 error_code="DB_ERROR"
             )
-
     def get_all(self, skip: int = 0, limit: int = 100) -> Sequence[Prompt]:
         """
         Get all prompts (latest versions only).

@@ -42,6 +42,17 @@ def create_run(
                     "structured_output": True
                 }
             },
+            "version_specific": {
+                "summary": "Version-specific example",
+                "description": "Create a run with a specific prompt version",
+                "value": {
+                    "prompt_id": 1,
+                    "project_id": 1,
+                    "input_variables": {"text": "What is machine learning?"},
+                    "structured_output": False,
+                    "version": 1
+                }
+            },
             "image": {
                 "summary": "Image input example",
                 "description": "Create a run with image input",
@@ -66,14 +77,14 @@ def create_run(
     The run is stored in the database for future reference.
 
     Args:
-        run_in: The run creation parameters
+        run_in: The run creation parameters including optional version number
         db: Database session
 
     Returns:
         Run: The created run object
 
     Raises:
-        404: If the prompt is not found
+        404: If the prompt or specified version is not found
         400: If the input variables are invalid
         500: If there's an internal server error
     """
@@ -84,12 +95,14 @@ def create_run(
             project_id=run_in.project_id,
             input_variables=run_in.input_variables,
             structured_output=run_in.structured_output,
-            model=run_in.model
+            model=run_in.model,
+            version=run_in.version
         )
-    except NotFoundError as e:
-        raise HTTPException(status_code=404, detail=str(e))
-    except ValidationError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except (NotFoundError, ValidationError) as e:
+        raise HTTPException(
+            status_code=404 if isinstance(e, NotFoundError) else 400,
+            detail=str(e)
+        )
     except AppException as e:
         raise HTTPException(status_code=e.status_code, detail=e.detail)
 

@@ -46,6 +46,7 @@ class PromptVersion(Base):
     description = Column(String(500))
     content = Column(String(10000), nullable=False)
     variables = Column(JSON, default=list)
+    output_schema = Column(JSONB, nullable=True)
     max_tokens = Column(Integer, nullable=False)
     temperature = Column(Float)
     created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())

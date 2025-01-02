@@ -277,31 +277,26 @@ class PromptBase(BaseModel):
     def validate_multi_modal_requirements(self) -> 'PromptBase':
         """
         Validate requirements for multi-modal prompts.
-        
-        For multi-modal prompts with structured output:
+
+        Requirements:
         1. Must have exactly one image variable
-        2. Must have a valid output_schema
-        3. Content must include instructions for structured output
         """
-        # Check if this is a multi-modal prompt with structured output
+        # Check if this is a multi-modal prompt
         has_image = any(var.type == VariableType.IMAGE for var in self.variables)
-        if has_image and self.output_schema:
-            # Validate that content includes instructions for structured output
-            if not any(keyword in self.content.lower() for keyword in ["format", "structure", "schema", "json"]):
+
+        if has_image:
+            if len(self.variables) > 1:
                 raise ValidationError(
-                    "Multi-modal prompts with structured output must include instructions "
-                    "in the content about the expected output format/structure"
+                    "Multi-modal prompts must have exactly one image variable"
                 )
-                
+
             logger.info(
-                "Validated multi-modal prompt with structured output",
+                "Validated multi-modal prompt",
                 extra={
-                    "has_image": True,
-                    "has_output_schema": True,
-                    "output_schema": self.output_schema
+                    "has_image": True
                 }
             )
-            
+
         return self
 
 
@@ -355,6 +350,7 @@ class PromptVersionBase(BaseModel):
         version: Version number
         content: Prompt template content
         variables: List of variables used in prompt
+        output_schema: JSON schema for validating structured output
         max_tokens: Maximum tokens in response
         temperature: Sampling temperature
         created_at: When this version was created
@@ -364,6 +360,7 @@ class PromptVersionBase(BaseModel):
     version: int = Field(description="Version number")
     content: str = Field(description="Prompt template content")
     variables: List[Dict] = Field(description="List of variables used in prompt")
+    output_schema: Optional[Dict[str, Any]] = Field(None, description="JSON schema for validating structured output")
     max_tokens: int = Field(description="Maximum tokens in response")
     temperature: float = Field(description="Sampling temperature")
     created_at: datetime = Field(description="When this version was created")

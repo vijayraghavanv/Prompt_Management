@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     # Database settings
     DB_USER: str = "postgres"
     DB_PASSWORD: str = "postgres"
-    DB_HOST: str = "localhost"
+    DB_HOST: str = "db"
     DB_PORT: str = "5432"
     DB_NAME: str = "promptdb"
 

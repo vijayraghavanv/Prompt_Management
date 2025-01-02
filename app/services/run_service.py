@@ -37,14 +37,26 @@ class RunService:
         project_id: int,
         input_variables: Dict,
         structured_output: bool = False,
-        model: Optional[str] = None
+        model: Optional[str] = None,
+        version: Optional[int] = None
     ) -> Run:
         """Create new run"""
         try:
-            # Get the prompt and its variables
+            # Get the prompt and its version
             prompt_obj = self.prompt_service.get(prompt_id)
             if not prompt_obj:
                 raise NotFoundError(f"Prompt {prompt_id} not found")
+
+            # Then handle versioning if specified
+            if version is not None:
+                if version != prompt_obj.current_version:
+                    prompt_version = self.prompt_service.get_version(prompt_id, version)
+                    if not prompt_version:
+                        raise NotFoundError(f"Version {version} of prompt {prompt_id} not found")
+                    prompt_obj = prompt_version
+
+            # Store the version we're using
+            used_version = version if version is not None else prompt_obj.current_version
 
             # Validate structured output requirements
             if structured_output:
@@ -124,11 +136,18 @@ class RunService:
             else:
                 # Regular completion without structured output
                 if has_image:
+                    # program = MultiModalLLMCompletionProgram.from_defaults(
+                    #     image_documents=image_documents,
+                    #     prompt_template_str=formatted_prompt,
+                    #     multi_modal_llm=llm,
+                    #     verbose=True
+                    # )
+                    # response = program()
                     response = llm.complete(
                         prompt=formatted_prompt,
                         image_documents=image_documents,
                         temperature=prompt_obj.temperature,
-                        max_tokens=prompt_obj.max_tokens
+                        # max_tokens=prompt_obj.max_tokens
                     )
                 else:
                     response = llm.complete(
@@ -175,7 +194,7 @@ class RunService:
             db_run = Run(
                 prompt_id=prompt_id,
                 project_id=project_id,
-                version=prompt_obj.current_version,
+                version=used_version,
                 input_variables=input_variables,
                 output=output,
                 model=model,
