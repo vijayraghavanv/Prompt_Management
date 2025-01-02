@@ -1,7 +1,7 @@
 FROM node:22-slim
 
 WORKDIR /app
-
+COPY .env .env
 # Install git
 RUN apt-get update && \
     apt-get install -y git && \

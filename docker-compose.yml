@@ -2,15 +2,15 @@ services:
   db:
     image: postgres:latest
     environment:
-      POSTGRES_DB: prompt_management
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres123
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5432:5432"
     networks:
       - app-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d prompt_management"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -26,9 +26,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    environment:
-      DATABASE_URL: postgresql://postgres:postgres123@db:5432/prompt_management
-      CORS_ORIGINS: "http://frontend:3000"
     networks:
       - app-network
     command: >
@@ -41,8 +38,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
-    environment:
-      NEXT_PUBLIC_API_URL: "http://backend:8000"
     depends_on:
       - backend
     networks:
