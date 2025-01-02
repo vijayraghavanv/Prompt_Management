@@ -1,4 +1,5 @@
-FROM node:20-slim
+  GNU nano 7.2                                                                                             Dockerfile
+FROM node:22-slim
 
 WORKDIR /app
 
@@ -7,14 +8,14 @@ RUN apt-get update && \
     apt-get install -y git && \
     rm -rf /var/lib/apt/lists/*
 
-# Clone frontend repository
+# Clone repository
 RUN git clone https://github.com/vijayraghavanv/YAPMT.git .
 
-# Install dependencies with force flag
-RUN npm install --force
+# Install all dependencies
+RUN npm install --legacy-peer-deps
 
 # Build the application
 RUN npm run build
 
-# Run the application in development mode
-CMD ["npm", "run", "dev"]
+# Run the application in production mode
+CMD ["npm", "run", "start"]
