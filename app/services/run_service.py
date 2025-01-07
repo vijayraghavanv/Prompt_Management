@@ -128,11 +128,15 @@ class RunService:
                     # Add schema instructions to prompt
                     formatted_prompt += "\n\nProvide your response in valid JSON format following this schema:\n"
                     formatted_prompt += json.dumps(prompt_obj.output_schema, indent=2)
-                    response = llm.complete(
-                        formatted_prompt,
-                        temperature=prompt_obj.temperature,
-                        max_tokens=prompt_obj.max_tokens
-                    )
+                    kwargs = {
+                        "temperature": prompt_obj.temperature,
+                    }
+
+                    # Add max_tokens only if it's not 0 or None
+                    if prompt_obj.max_tokens:
+                        kwargs["max_tokens"] = prompt_obj.max_tokens
+
+                    response = llm.complete(formatted_prompt, **kwargs)
             else:
                 # Regular completion without structured output
                 if has_image:
@@ -150,12 +154,15 @@ class RunService:
                         # max_tokens=prompt_obj.max_tokens
                     )
                 else:
-                    response = llm.complete(
-                        formatted_prompt,
-                        temperature=prompt_obj.temperature,
-                        max_tokens=prompt_obj.max_tokens
-                    )
+                    kwargs = {
+                        "temperature": prompt_obj.temperature,
+                    }
 
+                    # Add max_tokens only if it's not 0 or None
+                    if prompt_obj.max_tokens:
+                        kwargs["max_tokens"] = prompt_obj.max_tokens
+
+                    response = llm.complete(formatted_prompt, **kwargs)
             # Clean up temp files if we have images
             if has_image:
                 for doc in image_documents:

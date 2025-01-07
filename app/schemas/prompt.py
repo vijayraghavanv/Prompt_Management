@@ -126,8 +126,8 @@ class PromptBase(BaseModel):
         You cannot mix image and string variables."""
     )
     max_tokens: int = Field(
-        gt=0,
-        le=4000,
+        ge=0,
+        le=9999999999,
         description="Maximum tokens in response"
     )
     temperature: float = Field(
